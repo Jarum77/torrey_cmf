@@ -9,7 +9,7 @@ __credits__ = ["Paul Torrey and Ryan McKinnon"]
 __license__ = "GPL"
 __version__ = "1.0"
 __maintainer__ = "Paul Torrey"
-__email__ = "ptorrey@mit.harvard.edu"
+__email__ = "ptorrey@mit.edu"
 __status__ = "Public Release.  v1.0."
 
 
@@ -24,7 +24,13 @@ class number_density:
             [-1.05309169e+00,   1.17135834e-01,  -5.40660745e-02],
             [-8.58905816e-02,   2.52993131e-02,  -6.90611852e-03],
             [1.20106042e+01,   -2.34838939e-01,   2.52957319e-02]])
-         
+
+        self._dmf_vars = np.array(
+	[ [-3.78562499e+00,   1.86168941e-01,  -1.38846077e-01],  
+	  [-9.65414752e-01,   1.32918334e-01,  -5.68567233e-02],  
+	  [-8.77794305e-02,   3.21826643e-02,  -8.01041519e-03],   
+	  [ 1.20829904e+01,  -2.46826596e-01,   2.41133674e-02]] )
+
 
         self._cvdf_vars = np.array(
         [   [-2.34444132,  0.24249917, -0.10259731],
@@ -80,6 +86,11 @@ class number_density:
         """ Evaluate the dm CMF at a given list of masses at some redshift"""
         if np.max(log_mass) > 20: warn_not_log_arg()
         return self._cmf_fit_func(log_mass, self._cdmf_vars, redshift, target=target)
+
+    def gsmf_fit(self, log_mass, redshift, target=0):
+        """ Evaluate the GSMF at a given list of masses at some redshift"""
+        if np.max(log_mass) > 20: warn_not_log_arg()
+        return self._cmf_fit_func(log_mass, self._dmf_vars, redshift, target=target)
 
     def nc_cmf_fit(self, log_mass, redshift, target=0, z_init=0):
         """ If you feed this a **z_init*** stellar mass, it will return the
