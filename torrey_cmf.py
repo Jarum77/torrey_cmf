@@ -138,7 +138,6 @@ class number_density:
             if proj_dens < np.log10(3e-5):  # you're below the fit limits
                 print " PROJECTING GROWTH BELOW FIT LIMITS! "
                 proj_dens = np.log10(3e-5)
-        #print proj_dens
             res[i] = from_dens(proj_dens, z2)
             if res.shape[0] == 1:
                 return res[0]
@@ -155,11 +154,8 @@ class number_density:
 
 
 
-def warn_not_log_arg():#
-    a=1234
-#    print " "
-    #print " "
-    #print "   WARNING:  ARGUMENT DETECTED IN torrey_cmf.py THAT IS MUCH LARGER THAN EXPECTED"
-    #print "   WARNING:  VERIFY THAT YOU ARE USING LOG SCALE (AS REQUIRED) "
-    #print " "
-#print " "
+def warn_not_log_arg():
+    print " "
+    print "   WARNING:  ARGUMENT DETECTED IN torrey_cmf.py THAT IS MUCH LARGER THAN EXPECTED"
+    print "   WARNING:  VERIFY THAT YOU ARE USING LOG SCALE (AS REQUIRED) "
+    print " "
