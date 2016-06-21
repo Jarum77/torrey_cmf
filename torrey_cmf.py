@@ -61,45 +61,109 @@ class number_density:
       [-0.03829736,       -0.00023232,       0.00694828],
       [11.82842896,       -0.28090410,      -0.03059818]  ])
 
-        self._vars_nc_rev_z1 = np.array(
+        self._vars_nc_rev1 = np.array(			# changing _z1 to 1
     [ [-3.64009890,        1.03601036,      -0.31161953],
       [-0.79721518,        0.29299124,      -0.07746618],
       [-0.04838342,        0.03363121,      -0.00486779],
       [11.82759108,       -0.66505107,       0.18483682]  ])
     
         self._single_nd_fit = np.array(
-     [ [-2.345933,   4.018919,   -2.562873,   0.538731],
-       [-3.726408,   6.589452,   -4.041344,   0.812977],
-       [-1.904525,   3.294253,   -1.936011,   0.374844],
-       [-0.307381,   0.515786,   -0.290909,   0.054201],
-      
-       [7.103476,   -12.762439,   6.245308,   -0.987736],
-       [10.465877,  -19.101222,   9.438636,   -1.488629],
-       [4.687786,   -8.744238,    4.358233,   -0.686034],
-       [0.658602,   -1.260553,    0.634731,   -0.099878],
-      
-       [-4.291523,   7.968271,   -3.905838,   0.591144],
-       [-6.246956,  11.671404,   -5.756311,   0.873291],
-       [-2.760469,   5.224862,   -2.596056,   0.395104],
-       [-0.377230,   0.728651,   -0.365878,   0.055983]  )
+[      [-3.543897,   0.258535,   1.542722,   -0.357250,   1.000000], 
+       [-7.521481,   1.805338,   2.645436,   -0.719851,   1.000000], 
+       [-5.573959,   1.928476,   1.644844,   -0.512871,   1.000000], 
+       [-1.684414,   0.716219,   0.422669,   -0.149408,   1.000000], 
+       [-0.175163,   0.084925,   0.038304,   -0.015146,   1.000000], 
+       [14.793037,   -8.615741,   -1.144857,   0.589332,   1.000000], 
+       [30.664747,   -19.759457,   -1.032735,   1.096888,   1.000000], 
+       [21.787584,   -15.098940,   -0.004825,   0.707806,   1.000000], 
+       [6.369496,   -4.685285,   0.191480,   0.184279,   1.000000], 
+       [0.649058,   -0.498216,   0.034797,   0.016868,   1.000000], 
+       [-21.173604,   20.644712,   -5.391342,   0.281788,   1.000000], 
+       [-44.647099,   46.012493,   -13.592314,   1.056265,   1.000000], 
+       [-32.114170,   34.383268,   -10.912950,   0.993621,   1.000000], 
+       [-9.448847,   10.406104,   -3.464385,   0.344254,   1.000000], 
+       [-0.969170,   1.089449,   -0.374879,   0.039338,   1.000000] ] )
 
-    def singel_nd_fit(self, z, z0, init_N_tilda, target=0, **kwargs):
+        self._sigma_forward_fit = np.array( 
+	[ 0.30753811, -0.35706088,  0.07811929,  0.11658773, -0.36310229,  0.0878064,
+                   0.05432019, -0.08567579,  0.01938756,  0.3410485 , -0.26566291,  0.05867066,
+                   0.40404559, -0.27861255,  0.05734425,  0.06319481, -0.04605944,  0.01022102] )
+ 
+        self._surv_forward_fit = np.array(
+        [-0.57610316,  0.25395473, -0.06909108, -0.32306881,  0.30592045, -0.0841637,
+         -0.0588044 ,  0.07159256, -0.01935816,  0.34438256, -0.21727332,  0.04128673,
+          0.29859003, -0.21186113,  0.04228161,  0.03889436, -0.03177222,  0.00690157] )
+
+        self._nd_backward_fit = np.array(
+        [-0.39274648, -0.47308899, -0.09720173,  0.18875905,  0.16531384,  0.03451216] )
+
+        self._sigma_backward_fit = np.array(
+        [ 0.00961576, -0.06880463,  0.00405991, -0.01970638, -0.01135986, -0.00539835] )
+
+
+
+
+    def single_nd_fit(self, z, z0, init_N_tilda, target=0, verbose=False, **kwargs):
         """ Evaluate the forward number density evolution tracks for log_mass, z, and z0 """
+	if (init_N_tilda>-1) or (init_N_tilda<-6.5):
+	    if verbose:  print "out of range"
+	    return init_N_tilda
+	    
+        this_vars=self._single_nd_fit
         result=0
-        A = np.zeros(4); B = np.zeros(4); C = np.zeros(4)
-        for i in range(4):
-            A[i] = np.sum( [this_vars[i+0][j] * z0**j] for j in range(4) ] )
-            B[i] = np.sum( [this_vars[i+4][j] * z0**j] for j in range(4) ] )
-            C[i] = np.sum( [this_vars[i+8][j] * z0**j] for j in range(4) ] )
-      
-        A = np.sum( [A[i] * init_N_tilda ** i  for i in range(4)    ]   )
-        B = np.sum( [B[i] * init_N_tilda ** i  for i in range(4)    ]   )
-        C = np.sum( [C[i] * init_N_tilda ** i  for i in range(4)    ]   )
+        n_z0_exp=4; n_N0_exp = 5
+        A = np.zeros(n_N0_exp); B = np.zeros(n_N0_exp); C = np.zeros(n_N0_exp)
+        for i in range(n_N0_exp):
+            A[i] = np.sum( [this_vars[i+0*n_N0_exp][j] * z0**j for j in range(n_z0_exp) ] )
+            B[i] = np.sum( [this_vars[i+1*n_N0_exp][j] * z0**j for j in range(n_z0_exp) ] )
+            C[i] = np.sum( [this_vars[i+2*n_N0_exp][j] * z0**j for j in range(n_z0_exp) ] )
+
+        A = np.sum( [A[i] * init_N_tilda ** i  for i in range(n_N0_exp)    ]   )
+        B = np.sum( [B[i] * init_N_tilda ** i  for i in range(n_N0_exp)    ]   )
+        C = np.sum( [C[i] * init_N_tilda ** i  for i in range(n_N0_exp)    ]   )
     
-        dz = (z0 - redshift)
+        dz = (z0 - z)
         return init_N_tilda + A * dz + B * dz ** 2 + C * dz ** 3  - target
-      
-      
+
+    def sigma_forward_fit(self, z, z0, init_N_tilda, sigma_0=0.00, verbose=False):
+        """ Evaluate scatter in forward ND evolution tracks """
+        if (init_N_tilda>-1) or (init_N_tilda<-5.5):
+            if verbose:  print "out of range"
+            return sigma_0
+
+        this_vars = self._sigma_forward_fit
+	A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+        B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+	A = np.sum( [A_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
+        B = np.sum( [B_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
+	dz = (z0 - z)
+ 	return sigma_0 + A*dz + B*dz**2
+
+    def surf_forward_fit(self, z, z0, init_N_tilda, sigma_0=0.00, verbose=False):
+        """ Evaluate scatter in forward ND evolution tracks """
+        if (init_N_tilda>-1) or (init_N_tilda<-5.5):
+            if verbose:  print "out of range"
+            return 0.0
+        this_vars = self._surv_forward_fit
+        A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+        B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+        A = np.sum( [A_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
+        B = np.sum( [B_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
+        dz = (z0 - z)
+        return 1.0 + A*dz + B*dz**2
+
+    def nd_backward_fit( self, z, init_N_tilda ):
+        this_vars = self._nd_backward_fit
+        A_exp = np.sum( [this_vars[iii+0] * init_N_tilda **iii for iii in range(3) ] )
+        B_exp = np.sum( [this_vars[iii+3] * init_N_tilda **iii for iii in range(3) ] )
+        return init_N_tilda + A_exp * z + B_exp * z**2
+     
+    def sigma_backward_fit( self, z, init_N_tilda, sigma_0=0.0 ):
+        this_vars = self._sigma_backward_fit
+        A_exp = np.sum( [this_vars[iii+0] * init_N_tilda **iii for iii in range(3) ] )
+        B_exp = np.sum( [this_vars[iii+3] * init_N_tilda **iii for iii in range(3) ] )
+        return sigma_0 + A_exp * z + B_exp * z**2
+ 
     def cmf_fit(self, log_mass, redshift, target=0, **kwargs):
         """ Evaluate the CMF at a given list of masses at some redshift"""
         if np.max(log_mass) > 20: warn_not_log_arg()
