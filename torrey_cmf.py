@@ -18,10 +18,10 @@ from scipy.optimize import newton
 class number_density:
     def __init__(self):
         self._cmf_vars = np.array(
-	    [ [-2.89381061e+00,   8.21989048e-02,  -1.23157487e-01],
-	      [-6.25597878e-01,   8.62157470e-02,  -4.90327135e-02],
-	      [-3.88949868e-02,   2.54185320e-02,  -7.12953126e-03],
-	      [ 1.15238521e+01,  -1.87102380e-01,   2.10223127e-02] ] )
+	[ [-2.89381061e+00,   8.21989048e-02,  -1.23157487e-01],
+	  [-6.25597878e-01,   8.62157470e-02,  -4.90327135e-02],
+	  [-3.88949868e-02,   2.54185320e-02,  -7.12953126e-03],
+	  [ 1.15238521e+01,  -1.87102380e-01,   2.10223127e-02] ] )
 
         self._dmf_vars = np.array(
         [ [-4.58622836,        0.32510541,      -0.00729362],
@@ -111,11 +111,11 @@ class number_density:
 
 
 
-    def single_nd_fit(self, z, z0, init_N_tilda, target=0, verbose=False, **kwargs):
+    def single_nd_fit(self, z, z0, init_N_tilde, target=0, verbose=False, **kwargs):
         """ Evaluate the forward number density evolution tracks for log_mass, z, and z0 """
-	if (init_N_tilda>-1) or (init_N_tilda<-6.5):
+	if (init_N_tilde>-1) or (init_N_tilde<-6.5):
 	    if verbose:  print "out of range"
-	    return init_N_tilda
+	    return init_N_tilde
 	    
         this_vars=self._single_nd_fit
         result=0
@@ -126,50 +126,50 @@ class number_density:
             B[i] = np.sum( [this_vars[i+1*n_N0_exp][j] * z0**j for j in range(n_z0_exp) ] )
             C[i] = np.sum( [this_vars[i+2*n_N0_exp][j] * z0**j for j in range(n_z0_exp) ] )
 
-        A = np.sum( [A[i] * init_N_tilda ** i  for i in range(n_N0_exp)    ]   )
-        B = np.sum( [B[i] * init_N_tilda ** i  for i in range(n_N0_exp)    ]   )
-        C = np.sum( [C[i] * init_N_tilda ** i  for i in range(n_N0_exp)    ]   )
+        A = np.sum( [A[i] * init_N_tilde ** i  for i in range(n_N0_exp)    ]   )
+        B = np.sum( [B[i] * init_N_tilde ** i  for i in range(n_N0_exp)    ]   )
+        C = np.sum( [C[i] * init_N_tilde ** i  for i in range(n_N0_exp)    ]   )
     
         dz = (z0 - z)
-        return init_N_tilda + A * dz + B * dz ** 2 + C * dz ** 3  - target
+        return init_N_tilde + A * dz + B * dz ** 2 + C * dz ** 3  - target
 
-    def sigma_forward_fit(self, z, z0, init_N_tilda, sigma_0=0.00, verbose=False):
+    def sigma_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False):
         """ Evaluate scatter in forward ND evolution tracks """
-        if (init_N_tilda>-1) or (init_N_tilda<-5.5):
+        if (init_N_tilde>-1) or (init_N_tilde<-5.5):
             if verbose:  print "out of range"
             return sigma_0
 
         this_vars = self._sigma_forward_fit
 	A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
         B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
-	A = np.sum( [A_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
-        B = np.sum( [B_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
+	A = np.sum( [A_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
+        B = np.sum( [B_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
 	dz = (z0 - z)
  	return sigma_0 + A*dz + B*dz**2
 
-    def surf_forward_fit(self, z, z0, init_N_tilda, sigma_0=0.00, verbose=False):
-        """ Evaluate scatter in forward ND evolution tracks """
-        if (init_N_tilda>-1) or (init_N_tilda<-5.5):
+    def surv_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False):
+        """ Evaluate survival fraction of galaxies as a function of elapsed time """
+        if (init_N_tilde>-1) or (init_N_tilde<-5.5):
             if verbose:  print "out of range"
             return 0.0
         this_vars = self._surv_forward_fit
         A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
         B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
-        A = np.sum( [A_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
-        B = np.sum( [B_exp[iii] * init_N_tilda**iii for iii in range(3)  ] )
+        A = np.sum( [A_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
+        B = np.sum( [B_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
         dz = (z0 - z)
         return 1.0 + A*dz + B*dz**2
 
-    def nd_backward_fit( self, z, init_N_tilda ):
+    def nd_backward_fit( self, z, init_N_tilde ):
         this_vars = self._nd_backward_fit
-        A_exp = np.sum( [this_vars[iii+0] * init_N_tilda **iii for iii in range(3) ] )
-        B_exp = np.sum( [this_vars[iii+3] * init_N_tilda **iii for iii in range(3) ] )
-        return init_N_tilda + A_exp * z + B_exp * z**2
+        A_exp = np.sum( [this_vars[iii+0] * init_N_tilde **iii for iii in range(3) ] )
+        B_exp = np.sum( [this_vars[iii+3] * init_N_tilde **iii for iii in range(3) ] )
+        return init_N_tilde + A_exp * z + B_exp * z**2
      
-    def sigma_backward_fit( self, z, init_N_tilda, sigma_0=0.0 ):
+    def sigma_backward_fit( self, z, init_N_tilde, sigma_0=0.0 ):
         this_vars = self._sigma_backward_fit
-        A_exp = np.sum( [this_vars[iii+0] * init_N_tilda **iii for iii in range(3) ] )
-        B_exp = np.sum( [this_vars[iii+3] * init_N_tilda **iii for iii in range(3) ] )
+        A_exp = np.sum( [this_vars[iii+0] * init_N_tilde **iii for iii in range(3) ] )
+        B_exp = np.sum( [this_vars[iii+3] * init_N_tilde **iii for iii in range(3) ] )
         return sigma_0 + A_exp * z + B_exp * z**2
  
     def cmf_fit(self, log_mass, redshift, target=0, **kwargs):
