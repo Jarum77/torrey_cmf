@@ -273,7 +273,6 @@ class number_density:
         coeffs = [this_vars[i][0] + this_vars[i][1] * redshift +
               this_vars[i][2] * redshift**2 for i in range(4)]
         mstar = this_val - coeffs[3]
-        print coeffs
         return coeffs[0] + coeffs[1]*mstar + coeffs[2]*mstar**2 - np.exp(mstar) - target
 
 def warn_not_log_arg():
