@@ -52,6 +52,13 @@ class number_density:
           [-1.05830010e+00,  -1.66413452e-01,   3.95287210e-03],
           [-2.11658380e-02,  -2.13713414e-02,   6.82334998e-04],
           [1.41924033e+01,   -5.14655812e-01,   2.22309520e-02]])
+
+        self._mil_cdmf_vars = np.array(
+        [ [ -4.29566407e+00,   2.71071205e-01,  -2.97976875e-03],
+          [  -7.09729323e-01, -1.74574112e-01,   1.13325231e-02],   
+          [  2.45017695e-02,  -1.85759788e-02,  1.23707345e-03],   
+          [  1.41979860e+01,  -6.76811692e-01,   2.35257210e-02] ] )
+
             
         self._vars_nc = np.array(
         [ [-2.64396065,       -0.29957949,      -0.03786140],
@@ -198,6 +205,11 @@ class number_density:
         """ Evaluate the dm CMF at a given list of masses at some redshift"""
         if np.max(log_mass) > 20: warn_not_log_arg()
         return self._cmf_fit_func(log_mass, self._cdmf_vars, redshift, target=target)
+
+    def mil_cdmf_fit(self, log_mass, redshift, target=0, **kwargs):
+        """ Evaluate the dm CMF at a given list of masses at some redshift"""
+        if np.max(log_mass) > 20: warn_not_log_arg()
+        return self._cmf_fit_func(log_mass, self._mil_cdmf_vars, redshift, target=target)
 
     def gsmf_fit(self, log_mass, redshift, target=0, **kwargs):
         """ Evaluate the GSMF at a given list of masses at some redshift"""
