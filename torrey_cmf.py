@@ -54,10 +54,16 @@ class number_density:
           [1.41924033e+01,   -5.14655812e-01,   2.22309520e-02]])
 
         self._mil_cdmf_vars = np.array(
-        [ [ -4.29566407e+00,   2.71071205e-01,  -2.97976875e-03],
-          [  -7.09729323e-01, -1.74574112e-01,   1.13325231e-02],   
-          [  2.45017695e-02,  -1.85759788e-02,  1.23707345e-03],   
-          [  1.41979860e+01,  -6.76811692e-01,   2.35257210e-02] ] )
+ [   [     -4.71917123,        0.37387572,      -0.00621172],
+     [     -0.77838534,       -0.10139121,       0.00796192],
+     [      0.01454475,       -0.00960691,       0.00105868],
+     [     14.53717135,       -0.65066386,       0.02331520]  ] )
+
+
+#        [ [ -4.29566407e+00,   2.71071205e-01,  -2.97976875e-03],
+#          [  -7.09729323e-01, -1.74574112e-01,   1.13325231e-02],   
+#          [  2.45017695e-02,  -1.85759788e-02,  1.23707345e-03],   
+#          [  1.41979860e+01,  -6.76811692e-01,   2.35257210e-02] ] )
 
             
         self._vars_nc = np.array(
@@ -226,10 +232,14 @@ class number_density:
         if z_init == 3: this_vars = self._vars_nc_rev3
         return self._cmf_fit_func(log_mass, this_vars, redshift, target=target)
     
-    def mass_from_density(self, cum_num_dens, redshift):
+    def mass_from_density(self, cum_num_dens, redshift, type='IllustrisCMF'):
         """ Calculate the stellar mass from a cum num dens by inverting the CMF """
         args = (redshift, cum_num_dens)
-        mass = newton(self.cmf_fit, 10.0, args=args)
+        if type=='IllustrisCMF':
+            mass = newton(self.cmf_fit, 10.0, args=args)
+        elif type=='MillenniumCDMF':
+            mass = newton(self.mil_cdmf_fit, 10.0, args=args)
+
         return mass
 
     def dm_mass_from_density(self, cum_num_dens, redshift):
