@@ -102,6 +102,22 @@ class number_density:
           [-0.334570,   0.323606,   -0.069900,   ], ]
         )
 
+        self._mil_single_nd_fit = np.array(
+           [1.648593,   -3.732841,   0.559748, ],
+           [3.922858,   -7.594945,   1.323168, ],
+           [2.872717,   -5.333279,   1.028583, ],
+           [0.875170,   -1.584895,   0.328197, ],
+           [0.094326,   -0.167541,   0.036489, ],
+           [0.288443,   3.046505,   -0.626692, ],
+           [-1.102782,   6.973642,   -1.543784,],
+           [-1.548751,   5.266007,   -1.215838,],
+           [-0.624181,   1.636277,   -0.388549,],
+           [-0.077724,   0.177261,   -0.042935,],
+           [-0.553139,   -0.949717,   0.306548,],
+           [0.010697,   -2.530025,   0.734459, ],
+           [0.543777,   -2.073177,   0.572898, ],
+           [0.285440,   -0.683686,   0.183176, ],
+           [0.039872,   -0.077457,   0.020351, ],  )
 
         self._sigma_forward_fit = np.array( 
 	   [ 0.30753811, -0.35706088,  0.07811929,
@@ -130,13 +146,17 @@ class number_density:
 
 
 
-    def single_nd_fit(self, z, z0, init_N_tilde, target=0, verbose=False, **kwargs):
+    def single_nd_fit(self, z, z0, init_N_tilde, target=0, verbose=False, type='IllustrisCMF', **kwargs):
         """ Evaluate the forward number density evolution tracks for log_mass, z, and z0 """
-	if (init_N_tilde>-1) or (init_N_tilde<-6.5):
-	    if verbose:  print "out of range"
-	    return init_N_tilde
-	    
-        this_vars=self._single_nd_fit
+        if (init_N_tilde>-1) or (init_N_tilde<-6.5):
+            if verbose:  print "out of range"
+            return init_N_tilde
+    
+        if type=='IllustrisCMF':
+            this_vars=self._single_nd_fit
+        elif type=='MillenniumCMF':
+            this_vars=self._mil_single_nd_fit
+
         result=0
         n_z0_exp=3; n_N0_exp = 5
         A = np.zeros(n_N0_exp); B = np.zeros(n_N0_exp); C = np.zeros(n_N0_exp)
