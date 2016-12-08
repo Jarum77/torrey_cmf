@@ -142,6 +142,16 @@ class number_density:
         self._sigma_backward_fit = np.array(
         [ 0.00961576, -0.06880463,  0.00405991,
          -0.01970638, -0.01135986, -0.00539835] )
+    
+    
+    
+        self._mil_nd_backward_fit = np.array(
+        [ 0.38363647,  0.15014982,  0.0260642,
+          0.00528467,  0.00272866,  0.00137122] )
+    
+        self._mil_sigma_backward_fit = np.array(
+        [ 0.060904,   -0.04004665, -0.00023417,
+         -0.04309057, -0.02161618, -0.00426921] )
 
 
 
@@ -199,14 +209,20 @@ class number_density:
         dz = (z0 - z)
         return 1.0 + A*dz + B*dz**2
 
-    def nd_backward_fit( self, z, init_N_tilde ):
-        this_vars = self._nd_backward_fit
+    def nd_backward_fit( self, z, init_N_tilde, type='IllustrisCMF' ):
+        if type=='IllustrisCMF'
+            this_vars = self._nd_backward_fit
+        elif type=='MillenniumCMF':
+            this_vars = self._mil_nd_backward_fit
         A_exp = np.sum( [this_vars[iii+0] * init_N_tilde **iii for iii in range(3) ] )
         B_exp = np.sum( [this_vars[iii+3] * init_N_tilde **iii for iii in range(3) ] )
         return init_N_tilde + A_exp * z + B_exp * z**2
      
-    def sigma_backward_fit( self, z, init_N_tilde, sigma_0=0.0 ):
-        this_vars = self._sigma_backward_fit
+    def sigma_backward_fit( self, z, init_N_tilde, sigma_0=0.0, type='IllustrisCMF' ):
+        if type=='IllustrisCMF':
+            this_vars = self._sigma_backward_fit
+        elif type=='MillenniumCMF':
+            this_vars = self._mil_sigma_backward_fit
         A_exp = np.sum( [this_vars[iii+0] * init_N_tilde **iii for iii in range(3) ] )
         B_exp = np.sum( [this_vars[iii+3] * init_N_tilde **iii for iii in range(3) ] )
         return sigma_0 + A_exp * z + B_exp * z**2
