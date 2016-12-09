@@ -102,7 +102,7 @@ class number_density:
           [-0.334570,   0.323606,   -0.069900,   ], ]
         )
 
-        self._mil_single_nd_fit = np.array(
+        self._mil_single_nd_fit = np.array([
            [1.648593,   -3.732841,   0.559748, ],
            [3.922858,   -7.594945,   1.323168, ],
            [2.872717,   -5.333279,   1.028583, ],
@@ -117,7 +117,7 @@ class number_density:
            [0.010697,   -2.530025,   0.734459, ],
            [0.543777,   -2.073177,   0.572898, ],
            [0.285440,   -0.683686,   0.183176, ],
-           [0.039872,   -0.077457,   0.020351, ],  )
+           [0.039872,   -0.077457,   0.020351, ] ]  )
 
         self._sigma_forward_fit = np.array( 
 	   [ 0.30753811, -0.35706088,  0.07811929,
@@ -210,7 +210,7 @@ class number_density:
         return 1.0 + A*dz + B*dz**2
 
     def nd_backward_fit( self, z, init_N_tilde, type='IllustrisCMF' ):
-        if type=='IllustrisCMF'
+        if type=='IllustrisCMF':
             this_vars = self._nd_backward_fit
         elif type=='MillenniumCMF':
             this_vars = self._mil_nd_backward_fit
