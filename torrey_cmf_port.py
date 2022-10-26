@@ -157,7 +157,7 @@ class number_density:
     def single_nd_fit(self, z, z0, init_N_tilde, target=0, verbose=False, type='IllustrisCMF', **kwargs):
         """ Evaluate the forward number density evolution tracks for log_mass, z, and z0 """
         if (init_N_tilde>-1) or (init_N_tilde<-6.5):
-            if verbose:  print "out of range"
+            if verbose:  print ("out of range")
             return init_N_tilde
     
         if type=='IllustrisCMF':
@@ -180,30 +180,30 @@ class number_density:
         dz = (z0 - z)
         return init_N_tilde + A * dz + B * dz ** 2 + C * dz ** 3  - target
 
-    def sigma_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False, type='IllustrisCMF'):
-        """ Evaluate scatter in forward ND evolution tracks """
-        if (init_N_tilde>-1) or (init_N_tilde<-5.5):
-            if verbose:  print "out of range"
-            return sigma_0
+    # def sigma_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False, type='IllustrisCMF'):
+    #     """ Evaluate scatter in forward ND evolution tracks """
+    #     if (init_N_tilde>-1) or (init_N_tilde<-5.5):
+    #         if verbose:  print "out of range"
+    #         return sigma_0
 
-        if type=='IllustrisCMF':
-            this_vars = self._sigma_forward_fit
-        elif type=='MillenniumCMF':
-            this_vars = self._mil_sigma_forward_fit
-        else:
-            print "unrecognized fit type?"
+    #     if type=='IllustrisCMF':
+    #         this_vars = self._sigma_forward_fit
+    #     elif type=='MillenniumCMF':
+    #         this_vars = self._mil_sigma_forward_fit
+    #     else:
+    #         print "unrecognized fit type?"
 
-	A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
-        B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
-	A = np.sum( [A_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
-        B = np.sum( [B_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
-	dz = (z0 - z)
- 	return sigma_0 + A*dz + B*dz**2
+	# A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+    #     B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+	# A = np.sum( [A_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
+    #     B = np.sum( [B_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
+	# dz = (z0 - z)
+ 	# return sigma_0 + A*dz + B*dz**2
 
     def surv_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False):
         """ Evaluate survival fraction of galaxies as a function of elapsed time """
         if (init_N_tilde>-1) or (init_N_tilde<-5.5):
-            if verbose:  print "out of range"
+            if verbose:  print ("out of range")
             return 0.0
         this_vars = self._surv_forward_fit
         A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
@@ -289,50 +289,50 @@ class number_density:
         except: val = -1
         return val
 
-    def project_growth(self, arr, z1, z2, field='mass', nc=True):
-        """ Project a galaxy (population's) growth from init value arr at z1 to z2 """
-        arr = np.array([arr]).flatten()     # input masses or vds at z1
-        res = np.zeros_like(arr)            # output masses or vds at z2
+    # def project_growth(self, arr, z1, z2, field='mass', nc=True):
+    #     """ Project a galaxy (population's) growth from init value arr at z1 to z2 """
+    #     arr = np.array([arr]).flatten()     # input masses or vds at z1
+    #     res = np.zeros_like(arr)            # output masses or vds at z2
         
-        if field == 'mass':
-            from_dens = self.mass_from_density
-            if nc:  arr = arr
-            else:   to_dens = self.cmf_fit
-        elif field == 'vd':
-            from_dens = self.vd_from_density
-            if nc:  arr = [self.mass_from_density(self.cvdf_fit(x, z1), z1) for x in arr]
-            else:   to_dens = self.cvdf_fit
-        elif field == 'dm':
-            from_dens = self.dm_mass_from_density
-            if nc:  arr = [self.mass_from_density(self.cdmf_fit(x, z1), z1) for x in arr]
-            else:   to_dens = self.cdmf_fit
+    #     if field == 'mass':
+    #         from_dens = self.mass_from_density
+    #         if nc:  arr = arr
+    #         else:   to_dens = self.cmf_fit
+    #     elif field == 'vd':
+    #         from_dens = self.vd_from_density
+    #         if nc:  arr = [self.mass_from_density(self.cvdf_fit(x, z1), z1) for x in arr]
+    #         else:   to_dens = self.cvdf_fit
+    #     elif field == 'dm':
+    #         from_dens = self.dm_mass_from_density
+    #         if nc:  arr = [self.mass_from_density(self.cdmf_fit(x, z1), z1) for x in arr]
+    #         else:   to_dens = self.cdmf_fit
 
-        if nc:
-            to_dens = self.nc_cmf_fit
+    #     if nc:
+    #         to_dens = self.nc_cmf_fit
 
-        for i, elem in enumerate(arr):
-	    if nc:  proj_dens = to_dens(elem, z2, z_init=z1)
-	    else:   proj_dens = to_dens(elem, z1)
-            if proj_dens < np.log10(1e-5):  # you're below the fit limits
-	 	print " "
-                print " PROJECTING GROWTH BELOW FIT LIMITS! "
-                proj_dens = np.log10(1e-5)
-            res[i] = from_dens(proj_dens, z2)
+    #     for i, elem in enumerate(arr):
+	#     if nc:  proj_dens = to_dens(elem, z2, z_init=z1)
+	#     else:   proj_dens = to_dens(elem, z1)
+    #         if proj_dens < np.log10(1e-5):  # you're below the fit limits
+	#  	print " "
+    #             print " PROJECTING GROWTH BELOW FIT LIMITS! "
+    #             proj_dens = np.log10(1e-5)
+    #         res[i] = from_dens(proj_dens, z2)
 
-        if res.shape[0] == 1:
-                return res[0]
-        else:
-           return res
+    #     if res.shape[0] == 1:
+    #             return res[0]
+    #     else:
+    #        return res
 
-    def _cmf_fit_func(self, this_val, this_vars, redshift, target=0):
-        """ Evaluate Equations 1 & 2-5 from Torrey+2015 """
-        coeffs = [this_vars[i][0] + this_vars[i][1] * redshift +
-              this_vars[i][2] * redshift**2 for i in range(4)]
-        mstar = this_val - coeffs[3]
-        return coeffs[0] + coeffs[1]*mstar + coeffs[2]*mstar**2 - np.exp(mstar) - target
+    # def _cmf_fit_func(self, this_val, this_vars, redshift, target=0):
+    #     """ Evaluate Equations 1 & 2-5 from Torrey+2015 """
+    #     coeffs = [this_vars[i][0] + this_vars[i][1] * redshift +
+    #           this_vars[i][2] * redshift**2 for i in range(4)]
+    #     mstar = this_val - coeffs[3]
+    #     return coeffs[0] + coeffs[1]*mstar + coeffs[2]*mstar**2 - np.exp(mstar) - target
 
 def warn_not_log_arg():
-    print " "
-    print "   WARNING:  ARGUMENT DETECTED IN torrey_cmf.py THAT IS MUCH LARGER THAN EXPECTED"
-    print "   WARNING:  VERIFY THAT YOU ARE USING LOG SCALE (AS REQUIRED) "
-    print " "
+    print (" ")
+    print ("   WARNING:  ARGUMENT DETECTED IN torrey_cmf.py THAT IS MUCH LARGER THAN EXPECTED")
+    print ("   WARNING:  VERIFY THAT YOU ARE USING LOG SCALE (AS REQUIRED) ")
+    print (" ")

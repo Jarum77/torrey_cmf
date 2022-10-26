@@ -32,11 +32,9 @@ for tick in ax.yaxis.get_major_ticks():
 for index,z in enumerate(redshift_list):
     color = cm(1.*index/(1.0*redshift_list.shape[0]))
     nd = 10.0**tc.cvdf_fit(vd_array, z)
-    print 'vd array:'
-    print vd_array
-    print 'nd array:'
-    print nd
-    print "\n\n\n"
+    print (vd_array)
+    print (nd)
+    print ("\n\n\n")
     ax.plot( vd_array, nd,
 		lw=2, label='z={:.1f}'.format(z))
 
