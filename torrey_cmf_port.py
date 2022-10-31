@@ -324,12 +324,12 @@ class number_density:
     #     else:
     #        return res
 
-    # def _cmf_fit_func(self, this_val, this_vars, redshift, target=0):
-    #     """ Evaluate Equations 1 & 2-5 from Torrey+2015 """
-    #     coeffs = [this_vars[i][0] + this_vars[i][1] * redshift +
-    #           this_vars[i][2] * redshift**2 for i in range(4)]
-    #     mstar = this_val - coeffs[3]
-    #     return coeffs[0] + coeffs[1]*mstar + coeffs[2]*mstar**2 - np.exp(mstar) - target
+    def _cmf_fit_func(self, this_val, this_vars, redshift, target=0):
+        """ Evaluate Equations 1 & 2-5 from Torrey+2015 """
+        coeffs = [this_vars[i][0] + this_vars[i][1] * redshift +
+              this_vars[i][2] * redshift**2 for i in range(4)]
+        mstar = this_val - coeffs[3]
+        return coeffs[0] + coeffs[1]*mstar + coeffs[2]*mstar**2 - np.exp(mstar) - target
 
 def warn_not_log_arg():
     print (" ")
