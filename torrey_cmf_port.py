@@ -18,10 +18,10 @@ from scipy.optimize import newton
 class number_density:
     def __init__(self):
         self._cmf_vars = np.array(
-	[ [-2.89381061e+00,   8.21989048e-02,  -1.23157487e-01],
-	  [-6.25597878e-01,   8.62157470e-02,  -4.90327135e-02],
-	  [-3.88949868e-02,   2.54185320e-02,  -7.12953126e-03],
-	  [ 1.15238521e+01,  -1.87102380e-01,   2.10223127e-02] ] )
+    [ [-2.89381061e+00,   8.21989048e-02,  -1.23157487e-01],
+      [-6.25597878e-01,   8.62157470e-02,  -4.90327135e-02],
+      [-3.88949868e-02,   2.54185320e-02,  -7.12953126e-03],
+      [ 1.15238521e+01,  -1.87102380e-01,   2.10223127e-02] ] )
 
         self._dm_mf_vars = np.array(
         [ [-4.58622836,        0.32510541,      -0.00729362],
@@ -97,7 +97,7 @@ class number_density:
         )
 
         self._sigma_forward_fit = np.array( 
-	   [ 0.30753811, -0.35706088,  0.07811929,
+       [ 0.30753811, -0.35706088,  0.07811929,
          0.11658773, -0.36310229,  0.0878064,
          0.05432019, -0.08567579,  0.01938756,
          0.3410485 , -0.26566291,  0.05867066,
@@ -180,25 +180,27 @@ class number_density:
         dz = (z0 - z)
         return init_N_tilde + A * dz + B * dz ** 2 + C * dz ** 3  - target
 
-    # def sigma_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False, type='IllustrisCMF'):
-    #     """ Evaluate scatter in forward ND evolution tracks """
-    #     if (init_N_tilde>-1) or (init_N_tilde<-5.5):
-    #         if verbose:  print "out of range"
-    #         return sigma_0
+    def sigma_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False, type='IllustrisCMF'):
+        print(z)
+        if (init_N_tilde>-1) or (init_N_tilde<-5.5):
+            if verbose:  print ("out of range")
+            return sigma_0
 
-    #     if type=='IllustrisCMF':
-    #         this_vars = self._sigma_forward_fit
-    #     elif type=='MillenniumCMF':
-    #         this_vars = self._mil_sigma_forward_fit
-    #     else:
-    #         print "unrecognized fit type?"
-
-	# A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
-    #     B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
-	# A = np.sum( [A_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
-    #     B = np.sum( [B_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
-	# dz = (z0 - z)
- 	# return sigma_0 + A*dz + B*dz**2
+        if type =='IllustrisCMF':
+            this_vars = self._sigma_forward_fit
+        elif type=='MillenniumCMF':
+            this_vars = self._mil_sigma_forward_fit
+        else:
+            print ("unrecognized fit type?")
+        x = 5
+        print(x)
+        A_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 0+3*jjj:0+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+        B_exp = [  np.sum(  [coeff * z0**iii for iii, coeff in enumerate(this_vars[ 9+3*jjj:9+3*(jjj+1) ]) ]  ) for jjj in range(3)  ]
+        print(B_exp)
+        A = np.sum( [A_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
+        B = np.sum( [B_exp[iii] * init_N_tilde**iii for iii in range(3)  ] )
+        dz = (z0 - z)
+        return sigma_0 + A*dz + B*dz**2
 
     def surv_forward_fit(self, z, z0, init_N_tilde, sigma_0=0.00, verbose=False):
         """ Evaluate survival fraction of galaxies as a function of elapsed time """
@@ -311,10 +313,10 @@ class number_density:
     #         to_dens = self.nc_cmf_fit
 
     #     for i, elem in enumerate(arr):
-	#     if nc:  proj_dens = to_dens(elem, z2, z_init=z1)
-	#     else:   proj_dens = to_dens(elem, z1)
+    #     if nc:  proj_dens = to_dens(elem, z2, z_init=z1)
+    #     else:   proj_dens = to_dens(elem, z1)
     #         if proj_dens < np.log10(1e-5):  # you're below the fit limits
-	#  	print " "
+    #  	print " "
     #             print " PROJECTING GROWTH BELOW FIT LIMITS! "
     #             proj_dens = np.log10(1e-5)
     #         res[i] = from_dens(proj_dens, z2)
